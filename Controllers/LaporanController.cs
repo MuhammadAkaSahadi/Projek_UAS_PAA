@@ -24,23 +24,11 @@ namespace UAS_PAA.Controllers
 
         // POST LAHAN
         [HttpPost("lahan")]
-        // [Authorize(Roles = "User")] // Aktifkan jika perlu
+        [Authorize(Roles = "User")]
         public IActionResult TambahLahan([FromBody] Lahan lahan)
         {
             try
             {
-                // Logging input
-                Console.WriteLine("===== DATA LAHAN DITERIMA =====");
-                Console.WriteLine($"Nama     : {lahan.Nama_Lahan}");
-                Console.WriteLine($"Luas     : {lahan.Luas_Lahan}");
-                Console.WriteLine($"Satuan   : {lahan.Satuan_Luas}");
-                Console.WriteLine($"Koordinat: {lahan.Koordinat}");
-                Console.WriteLine($"Lat      : {lahan.Centroid_Lat}");
-                Console.WriteLine($"Lng      : {lahan.Centroid_Lng}");
-                Console.WriteLine($"ID User  : {lahan.Id_Users}");
-
-                // ==== VALIDASI ====
-
                 if (string.IsNullOrWhiteSpace(lahan.Nama_Lahan))
                     return BadRequest(new { message = "Nama lahan tidak boleh kosong" });
 
@@ -61,8 +49,6 @@ namespace UAS_PAA.Controllers
 
                 if (lahan.Centroid_Lng is < -180 or > 180)
                     return BadRequest(new { message = "Longitude tidak valid (harus antara -180 hingga 180)" });
-
-                // ==================
 
                 using var conn = new NpgsqlConnection(_constr);
                 conn.Open();
@@ -91,6 +77,7 @@ namespace UAS_PAA.Controllers
 
         // Polygon IMAGE
         [HttpPost("polygon-image")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> TambahLahanWithImage([FromBody] LahanWithImage lahan)
         {
             try
@@ -129,7 +116,7 @@ namespace UAS_PAA.Controllers
 
         // POST POLYGON by ID
         [HttpPost("polygon/{id_lahan}")]
-        //[Authorize(Roles = "User")]
+        [Authorize(Roles = "User")]
         public IActionResult SimpanPolygon(int id_lahan, [FromBody] List<KoordinatModel> koordinatList)
         {
             if (koordinatList == null || koordinatList.Count < 3)
@@ -165,6 +152,7 @@ namespace UAS_PAA.Controllers
 
         // POST LAPORAN LAHAN
         [HttpPost]
+        [Authorize(Roles = "User")]
         public IActionResult TambahLaporanLahan([FromBody] LaporanLahan laporan)
         {
             try
@@ -190,10 +178,9 @@ namespace UAS_PAA.Controllers
             }
         }
 
-        
-
         // POST Laporan
         [HttpPost("laporan")]
+        [Authorize(Roles = "User")]
         public IActionResult PostLaporan([FromBody] LaporanLahanRequest data)
         {
             using (var conn = new NpgsqlConnection(_constr))
@@ -207,7 +194,7 @@ namespace UAS_PAA.Controllers
                         if (idLaporan <= 0)
                             return BadRequest(new { message = "ID laporan tidak valid." });
 
-                        // Validasi dan insert Hasil Panen
+                        // Hasil Panen
                         if (data.HasilPanen != null)
                         {
                             if (data.HasilPanen.Tanggal_Panen > DateTime.Now.AddYears(1) || data.HasilPanen.Total_Hasil_Panen <= 0)
@@ -341,6 +328,7 @@ namespace UAS_PAA.Controllers
 
         //GET LAHAN
         [HttpGet("lahan")]
+        [Authorize(Roles = "User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetAllLahan()
         {
@@ -375,6 +363,7 @@ namespace UAS_PAA.Controllers
 
         // GET LAporan LENGAKP
         [HttpGet("laporan")]
+        [Authorize(Roles = "User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Dictionary<string, object>>> GetAllLaporanLengkap()
         {
@@ -407,7 +396,7 @@ namespace UAS_PAA.Controllers
 
         // GET laporan lengkap by ID
         [HttpGet("laporan/{id_lahan}")]
-        //[Authorize(Roles = "admin,user")]
+        [Authorize(Roles = "User")]
         public IActionResult GetLaporanByLahan(int id_lahan)
         {
             SqlDbHelpers db = new SqlDbHelpers(_constr);
@@ -416,7 +405,6 @@ namespace UAS_PAA.Controllers
             {
                 var hasil = new Dictionary<string, object>();
 
-                // 1. Cari id_laporan_lahan dari id_lahan
                 var laporan = db.QuerySingle(
                     "SELECT * FROM LaporanLahan WHERE id_lahan = @id_lahan",
                     new Dictionary<string, object> { { "@id_lahan", id_lahan } }
@@ -431,7 +419,6 @@ namespace UAS_PAA.Controllers
                 int idLaporan = Convert.ToInt32(laporan["id_laporan_lahan"]);
                 hasil["laporan_lahan"] = laporan;
 
-                // 2. Ambil data laporan lengkap
                 hasil["hasilPanen"] = QueryList(db, "SELECT * FROM HasilPanen WHERE id_laporan_lahan = @id", idLaporan);
                 hasil["musimTanam"] = QueryList(db, "SELECT * FROM MusimTanam WHERE id_laporan_lahan = @id", idLaporan);
                 hasil["pendampingan"] = QueryList(db, "SELECT * FROM KegiatanPendampingan WHERE id_laporan_lahan = @id", idLaporan);
@@ -448,7 +435,6 @@ namespace UAS_PAA.Controllers
                 return StatusCode(500, new { message = "Gagal mengambil data laporan: " + ex.Message });
             }
         }
-
 
         private List<Dictionary<string, object>> QueryList(SqlDbHelpers db, string query, int id)
         {
@@ -473,6 +459,7 @@ namespace UAS_PAA.Controllers
 
         // PUT laporan
         [HttpPut("laporan/{id}")]
+        [Authorize(Roles = "User")]
         public IActionResult UpdateLaporan(int id, [FromBody] UpdateLaporanRequest req)
         {
             try
@@ -597,6 +584,7 @@ namespace UAS_PAA.Controllers
 
         // DELETE LAHAN by ID
         [HttpDelete("lahan/{id}")]
+        [Authorize(Roles = "User")]
         public IActionResult DeleteLahan(int id)
         {
             using var conn = new NpgsqlConnection(_constr);
@@ -606,7 +594,6 @@ namespace UAS_PAA.Controllers
 
             try
             {
-                // 1. Cari semua laporan yang terkait dengan lahan ini
                 var laporanIds = new List<int>();
                 using (var cmd = new NpgsqlCommand("SELECT id_laporan_lahan FROM laporanlahan WHERE id_lahan = @id_lahan", conn, trans))
                 {
@@ -618,10 +605,8 @@ namespace UAS_PAA.Controllers
                     }
                 }
 
-                // 2. Hapus semua data laporan yang terkait dengan lahan ini
                 foreach (var laporanId in laporanIds)
                 {
-                    // Hapus data detail laporan terlebih dahulu (foreign key dependencies)
                     string[] deleteChildQueries =
                     {
                 "DELETE FROM LaporanGambar WHERE id_laporan_lahan = @laporan_id",
@@ -640,7 +625,6 @@ namespace UAS_PAA.Controllers
                         cmd.ExecuteNonQuery();
                     }
 
-                    // Hapus data laporan utama
                     using (var cmd = new NpgsqlCommand("DELETE FROM laporanlahan WHERE id_laporan_lahan = @laporan_id", conn, trans))
                     {
                         cmd.Parameters.AddWithValue("@laporan_id", laporanId);
@@ -648,14 +632,12 @@ namespace UAS_PAA.Controllers
                     }
                 }
 
-                // 3. Hapus koordinat lahan (jika ada)
                 using (var cmd = new NpgsqlCommand("DELETE FROM KoordinatLahan WHERE id_lahan = @id_lahan", conn, trans))
                 {
                     cmd.Parameters.AddWithValue("@id_lahan", id);
                     cmd.ExecuteNonQuery();
                 }
 
-                // 4. Hapus data lahan utama
                 using (var cmd = new NpgsqlCommand("DELETE FROM Lahan WHERE id_lahan = @id_lahan", conn, trans))
                 {
                     cmd.Parameters.AddWithValue("@id_lahan", id);
@@ -684,6 +666,7 @@ namespace UAS_PAA.Controllers
 
         //DElete LAPORAN
         [HttpDelete("laporan/{id}")]
+        [Authorize(Roles = "User")]
         public IActionResult DeleteLaporan(int id)
         {
             using var conn = new NpgsqlConnection(_constr);
@@ -693,7 +676,6 @@ namespace UAS_PAA.Controllers
 
             try
             {
-                // Urutan hapus: dari tabel yang tergantung ke yang utama
                 string[] deleteChildQueries =
                 {
             "DELETE FROM LaporanGambar WHERE id_laporan_lahan = @id",
@@ -725,11 +707,9 @@ namespace UAS_PAA.Controllers
                     }
                 }
 
-                // CEK APAKAH MASIH ADA LAPORAN TERSISA
                 var checkCmd = new NpgsqlCommand("SELECT COUNT(*) FROM laporanlahan", conn, trans);
                 var remainingCount = Convert.ToInt32(checkCmd.ExecuteScalar());
 
-                // JIKA TIDAK ADA LAPORAN TERSISA, RESET SEQUENCE
                 if (remainingCount == 0)
                 {
                     var resetCmd = new NpgsqlCommand("ALTER SEQUENCE laporanlahan_id_laporan_lahan_seq RESTART WITH 1;", conn, trans);

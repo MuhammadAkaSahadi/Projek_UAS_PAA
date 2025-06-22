@@ -52,3 +52,5 @@ D:\M AKA file\Sekolah\SEMESTER 4\PAA\UAS_PAA\UAS_PAA\obj\Debug\net8.0\UAS_PAA.ge
 D:\M AKA file\Sekolah\SEMESTER 4\PAA\UAS_PAA\UAS_PAA\obj\Debug\net8.0\ref\UAS_PAA.dll
 D:\M AKA file\Sekolah\SEMESTER 4\PAA\UAS_PAA\UAS_PAA\bin\Debug\net8.0\UAS_PAA.staticwebassets.runtime.json
 D:\M AKA file\Sekolah\SEMESTER 4\PAA\UAS_PAA\UAS_PAA\bin\Debug\net8.0\CloudinaryDotNet.dll
+D:\M AKA file\Sekolah\SEMESTER 4\PAA\UAS_PAA\UAS_PAA\obj\Debug\net8.0\UAS_PAA.sourcelink.json
+D:\M AKA file\Sekolah\SEMESTER 4\PAA\UAS_PAA\UAS_PAA\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

@@ -22,8 +22,7 @@ namespace UAS_PAA.Helpers
 
             var claims = new List<Claim>
             {
-                new Claim("Id_Users", users.Id_Users.ToString()), // ✅ custom claim untuk Flutter
-                //new Claim(JwtRegisteredClaimNames.NameId, users.Id_Users.ToString()), // ✅ standar `nameid`
+                new Claim("Id_Users", users.Id_Users.ToString()),
                 new Claim(ClaimTypes.Email, users.Email ?? string.Empty),
                 new Claim(ClaimTypes.Name, users.Username ?? string.Empty)
             };

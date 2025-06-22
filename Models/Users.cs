@@ -6,8 +6,8 @@
         public string Email { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public int Id_Role { get; set; } // Sesuai dengan foreign key ke tabel Role
-        public Role? Role { get; set; } // Navigation property untuk join data
+        public int Id_Role { get; set; } 
+        public Role? Role { get; set; } 
     }
 
     public class Role

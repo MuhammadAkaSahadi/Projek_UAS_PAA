@@ -22,20 +22,12 @@ namespace UAS_PAA.Controllers
 
         // POST Tips
         [HttpPost]
-        // [Authorize(Roles = "User")] // Aktifkan jika perlu
+         [Authorize(Roles = "Admin")]
         public IActionResult TambahTips([FromBody] Tips tips)
         {
             try
             {
-                // Logging input
-                Console.WriteLine("===== DATA TIPS DITERIMA =====");
-                Console.WriteLine($"Judul       : {tips.Judul}");
-                Console.WriteLine($"Deskripsi   : {tips.Deskripsi}");
-                Console.WriteLine($"Gambar      : {tips.Gambar}");
-                Console.WriteLine($"Tanggal     : {tips.Tanggal_Tips}");
-                Console.WriteLine($"ID User     : {tips.Id_Users}");
 
-                // ==== VALIDASI ====
                 if (string.IsNullOrWhiteSpace(tips.Judul))
                     return BadRequest(new { message = "Judul tips tidak boleh kosong" });
 
@@ -51,7 +43,6 @@ namespace UAS_PAA.Controllers
                 if (tips.Tanggal_Tips > DateTime.Now.AddYears(1))
                     return BadRequest(new { message = "Tanggal tips tidak valid" });
 
-                // ==================
 
                 using var conn = new NpgsqlConnection(_constr);
                 conn.Open();
@@ -116,12 +107,11 @@ namespace UAS_PAA.Controllers
 
         // PUT Tips
         [HttpPut("{id}")]
-        // [Authorize(Roles = "User")] // Aktifkan jika perlu
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateTips(int id, [FromBody] Tips tips)
         {
             try
             {
-                // ==== VALIDASI ====
                 if (string.IsNullOrWhiteSpace(tips.Judul))
                     return BadRequest(new { message = "Judul tips tidak boleh kosong" });
 
@@ -134,7 +124,6 @@ namespace UAS_PAA.Controllers
                 if (tips.Tanggal_Tips > DateTime.Now.AddYears(1))
                     return BadRequest(new { message = "Tanggal tips tidak valid" });
 
-                // ==================
 
                 using var conn = new NpgsqlConnection(_constr);
                 conn.Open();
@@ -172,7 +161,7 @@ namespace UAS_PAA.Controllers
 
         // DELETE Tips by ID
         [HttpDelete("{id}")]
-        // [Authorize(Roles = "User")] // Aktifkan jika perlu
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteTips(int id)
         {
             using var conn = new NpgsqlConnection(_constr);
@@ -181,7 +170,6 @@ namespace UAS_PAA.Controllers
 
             try
             {
-                // Cek apakah tips exists
                 var checkCmd = new NpgsqlCommand("SELECT id_tips FROM Tips WHERE id_tips = @id", conn, trans);
                 checkCmd.Parameters.AddWithValue("@id", id);
                 var exists = checkCmd.ExecuteScalar();
@@ -203,7 +191,6 @@ namespace UAS_PAA.Controllers
                     return StatusCode(500, new { message = "Gagal menghapus tips" });
                 }
 
-                // CEK APAKAH MASIH ADA TIPS TERSISA
                 var checkRemainingCmd = new NpgsqlCommand("SELECT COUNT(*) FROM Tips", conn, trans);
                 var remainingCount = Convert.ToInt32(checkRemainingCmd.ExecuteScalar());
 

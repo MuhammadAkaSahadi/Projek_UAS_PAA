@@ -9,40 +9,33 @@ namespace UAS_PAA.Models
 {
     public class LoginContext
     {
-        private string __constr; // Menyimpan connection string database
-        private string __ErrorMsg; // Menyimpan pesan error saat autentikasi
+        private string __constr; 
+        private string __ErrorMsg; 
 
-        public LoginContext(string pConstr) // Konstruktor menerima connection string
+        public LoginContext(string pConstr)
         {
             __constr = pConstr;
         }
 
         public List<Login> Autentifikasi(string p_username, string p_password, IConfiguration p_config)
         {
-            List<Login> list1 = new List<Login>(); // Menyimpan hasil autentikasi user (dengan token)
+            List<Login> list1 = new List<Login>();
 
-            // Query untuk memverifikasi user berdasarkan username & password
-            // Join ke tabel peran_users dan peran untuk mendapatkan role
             string query = @"
                             SELECT u.id_users, u.username, u.email, r.id_role, r.nama_role
                             FROM users u
                             JOIN role r ON u.id_role = r.id_role
                             WHERE u.username = @username AND u.password = crypt(@password, u.password)";
 
-            // Logging untuk debugging
-            Console.WriteLine($"Query: {query}");
-            Console.WriteLine($"Username: {p_username}");
-            Console.WriteLine($"Password: {p_password}");
-
-            SqlDbHelpers db = new SqlDbHelpers(this.__constr); // Buat koneksi ke database
+            SqlDbHelpers db = new SqlDbHelpers(this.__constr);
 
             try
             {
-                NpgsqlCommand cmd = db.getNpgsqlCommand(query); // Buat command dari query SQL
-                cmd.Parameters.AddWithValue("@username", p_username); // Isi parameter username
-                cmd.Parameters.AddWithValue("@password", p_password); // Isi parameter password
+                NpgsqlCommand cmd = db.getNpgsqlCommand(query); 
+                cmd.Parameters.AddWithValue("@username", p_username); 
+                cmd.Parameters.AddWithValue("@password", p_password);
 
-                using (NpgsqlDataReader reader = cmd.ExecuteReader()) // Jalankan query
+                using (NpgsqlDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
@@ -54,7 +47,7 @@ namespace UAS_PAA.Models
                             Id_Role = Convert.ToInt32(reader["id_role"]),
                             Nama_Role = reader["nama_role"].ToString(),
                             Token = GenerateJwtToken(
-                                Convert.ToInt32(reader["id_users"]), // Tambahkan parameter ID
+                                Convert.ToInt32(reader["id_users"]), 
                                 reader["username"].ToString(),
                                 reader["nama_role"].ToString(),
                                 p_config
@@ -69,21 +62,21 @@ namespace UAS_PAA.Models
 
                 }
 
-                cmd.Dispose(); // Bersihkan command
-                db.closeConnection(); // Tutup koneksi
+                cmd.Dispose(); 
+                db.closeConnection(); 
             }
             catch (Exception ex)
             {
-                __ErrorMsg = ex.Message; // Tangkap error jika gagal
-                Console.WriteLine("Error: " + ex.Message); // Log error
+                __ErrorMsg = ex.Message; 
+                Console.WriteLine("Error: " + ex.Message);
             }
 
-            if (list1.Count == 0) // Jika tidak ditemukan user
+            if (list1.Count == 0) 
             {
                 Console.WriteLine("No user found with given credentials.");
             }
 
-            return list1; // Kembalikan hasil autentikasi
+            return list1; 
         }
 
         private string GenerateJwtToken(int userId, string username, string role, IConfiguration pConfig)
@@ -93,9 +86,9 @@ namespace UAS_PAA.Models
 
             var claims = new[]
             {
-                new Claim("Id_Users", userId.ToString()), // Claim khusus untuk Flutter
-                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()), // Standard JWT claim
-                new Claim(ClaimTypes.NameIdentifier, userId.ToString()), // ASP.NET default
+                new Claim("Id_Users", userId.ToString()), 
+                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()), 
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                 new Claim(ClaimTypes.Name, username),
                 new Claim(ClaimTypes.Role, role)
             };

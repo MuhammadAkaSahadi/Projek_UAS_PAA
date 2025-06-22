@@ -7,10 +7,9 @@ using UAS_PAA.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var key = builder.Configuration["Jwt:Key"]; // Ambil key dari appsettings.json
+var key = builder.Configuration["Jwt:Key"]; 
 var issuer = builder.Configuration["Jwt:Issuer"];
 var audience = builder.Configuration["Jwt:Audience"];
-// Add services to the container.
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -30,16 +29,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = issuer,
             ValidAudience = audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)) // Pastikan ini sama
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
         };
 
-        // Custom response untuk unauthorized access
         options.Events = new JwtBearerEvents
         {
             OnChallenge = context =>
             {
                 context.HandleResponse();
-                context.Response.StatusCode = 403; // Ubah dari 401 ke 403 Forbidden
+                context.Response.StatusCode = 403;
                 context.Response.ContentType = "application/json";
                 var result = System.Text.Json.JsonSerializer.Serialize(new { message = "Kamu tidak mempunyai akses ini!" });
                 return context.Response.WriteAsync(result);
@@ -114,7 +112,7 @@ app.UseStatusCodePages(async context =>
 {
     var response = context.HttpContext.Response;
 
-    if (response.StatusCode == 403) // Jika status 403 (Forbidden)
+    if (response.StatusCode == 403)
     {
         response.ContentType = "application/json";
         await response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(new
@@ -127,7 +125,7 @@ app.UseStatusCodePages(async context =>
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseStaticFiles(); // untuk akses gambar dari /uploads/
+app.UseStaticFiles();
 
 app.MapControllers();
 

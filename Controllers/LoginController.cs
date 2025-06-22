@@ -69,10 +69,10 @@ namespace UAS_PAA.Controllers
                     return Conflict(new { message = "Email atau username sudah terdaftar." });
                 }
 
-                // Insert user baru (pakai pgcrypto)
+                
                 string insertQuery = @"
                     INSERT INTO users (email, username, password, id_role)
-                    VALUES (@email, @username, crypt(@password, gen_salt('bf')), 2)"; // Role user = 2
+                    VALUES (@email, @username, crypt(@password, gen_salt('bf')), 2)";
 
                 var cmd = db.getNpgsqlCommand(insertQuery);
                 cmd.Parameters.AddWithValue("@email", request.Email);
@@ -92,14 +92,14 @@ namespace UAS_PAA.Controllers
         }
     }
 
-    // LOGIN DTO
+    // LOGIN Req Model
     public class LoginRequest
     {
         public string Username { get; set; }
         public string Password { get; set; }
     }
 
-    // REGISTER DTO
+    // REGISTER Req Model
     public class RegisterRequest
     {
         public string Email { get; set; }

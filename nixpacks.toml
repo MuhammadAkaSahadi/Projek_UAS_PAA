@@ -11,4 +11,4 @@ cmds = [
 ]
 
 [start]
-cmd = "dotnet out/UAS_PAA.dll"
+cmd = "dotnet out/UAS_PAA/UAS_PAA.dll"

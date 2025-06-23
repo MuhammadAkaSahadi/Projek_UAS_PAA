@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UAS_PAA")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f56295ac563e52477951bdf76adbbbc567031e1e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8e7ea937c26a99204e9fd4399494e165dc614e0d")]
 [assembly: System.Reflection.AssemblyProductAttribute("UAS_PAA")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UAS_PAA")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

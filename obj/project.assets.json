@@ -4517,23 +4517,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\User\\.nuget\\packages\\": {},
+    "C:\\Users\\user\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\M AKA file\\Sekolah\\SEMESTER 4\\PAA\\UAS_PAA\\UAS_PAA\\UAS_PAA.csproj",
+      "projectUniqueName": "C:\\M AKA file\\Sekolah\\SEMESTER 4\\PAA\\UAS_PAA\\UAS_PAA\\UAS_PAA\\UAS_PAA.csproj",
       "projectName": "UAS_PAA",
-      "projectPath": "D:\\M AKA file\\Sekolah\\SEMESTER 4\\PAA\\UAS_PAA\\UAS_PAA\\UAS_PAA.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "D:\\M AKA file\\Sekolah\\SEMESTER 4\\PAA\\UAS_PAA\\UAS_PAA\\obj\\",
+      "projectPath": "C:\\M AKA file\\Sekolah\\SEMESTER 4\\PAA\\UAS_PAA\\UAS_PAA\\UAS_PAA\\UAS_PAA.csproj",
+      "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
+      "outputPath": "C:\\M AKA file\\Sekolah\\SEMESTER 4\\PAA\\UAS_PAA\\UAS_PAA\\UAS_PAA\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -4561,7 +4561,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.200"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
@@ -4611,7 +4611,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
